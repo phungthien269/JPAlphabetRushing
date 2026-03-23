@@ -1,0 +1,96 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Outfit:wght@400;500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --font-heading: "Outfit", sans-serif;
+  --font-body: "Work Sans", sans-serif;
+  --font-jp: "Noto Sans JP", sans-serif;
+  --color-background: #eef8ff;
+  --color-surface: rgba(255, 255, 255, 0.88);
+  --color-surface-strong: #ffffff;
+  --color-border: rgba(67, 123, 199, 0.16);
+  --color-text: #10203a;
+  --color-text-muted: #5c708f;
+  --color-accent: #5fb4ff;
+  --color-accent-strong: #2b7df0;
+  --color-success: #1fb783;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+}
+
+:root {
+  color: var(--color-text);
+  font-family: var(--font-body);
+  background:
+    radial-gradient(circle at top left, rgba(95, 180, 255, 0.22), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(61, 143, 240, 0.14), transparent 35%),
+    linear-gradient(180deg, #f6fbff 0%, #eaf4ff 100%);
+}
+
+:root.dark {
+  --color-background: #081120;
+  --color-surface: rgba(13, 27, 49, 0.92);
+  --color-surface-strong: #10203a;
+  --color-border: rgba(142, 194, 255, 0.18);
+  --color-text: #ecf5ff;
+  --color-text-muted: #9ab1cb;
+  --color-accent: #73c8ff;
+  --color-accent-strong: #93dbff;
+  background:
+    radial-gradient(circle at top left, rgba(95, 180, 255, 0.12), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(20, 50, 94, 0.3), transparent 35%),
+    linear-gradient(180deg, #081120 0%, #0d1830 100%);
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  color: var(--color-text);
+  background: transparent;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+.surface-card {
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  box-shadow: 0 24px 60px rgba(28, 74, 125, 0.14);
+  backdrop-filter: blur(16px);
+}
+
+:root.dark .surface-card {
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.38);
+}
+
+.kana-text {
+  font-family: var(--font-jp);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
