@@ -53,7 +53,7 @@ export function AppShell({
         {t("common.skipToContent")}
       </a>
       <header className="surface-card sticky top-4 z-40 flex items-center justify-between gap-3 rounded-[1.5rem] px-4 py-3">
-        <div className="flex items-center gap-3">
+        <NavLink to="/" className="flex items-center gap-3 rounded-2xl transition duration-200 hover:opacity-90">
           <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[var(--color-accent)] text-slate-950">
             <Sparkles className="h-5 w-5" />
           </div>
@@ -61,7 +61,7 @@ export function AppShell({
             <div className="font-[var(--font-heading)] text-base font-semibold">Kana Flow</div>
             <div className="text-xs text-[var(--color-text-muted)]">{title ?? t("home.quickStart")}</div>
           </div>
-        </div>
+        </NavLink>
         <nav className="hidden items-center gap-2 md:flex">
           <NavItem to="/" label={t("nav.home")} icon={<Home className="h-4 w-4" />} />
           <NavItem to="/scripts" label={t("nav.scripts")} icon={<Languages className="h-4 w-4" />} />

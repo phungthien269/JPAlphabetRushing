@@ -75,20 +75,7 @@ export function ReviewPage() {
     ]);
   }, [currentQuestion, feedback, script, sessionState]);
 
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (!feedback && ["Digit1", "Digit2", "Digit3", "Digit4"].includes(event.code) && currentQuestion) {
-        event.preventDefault();
-        const index = Number(event.code.replace("Digit", "")) - 1;
-        const option = currentQuestion.options[index];
-        if (option) handleAnswer(option);
-      }
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [currentQuestion, feedback, handleAnswer]);
-
-  async function continueFlow() {
+  const continueFlow = useCallback(async () => {
     if (!sessionState) return;
     if (isSessionComplete(sessionState)) {
       const nextProgress = [...snapshot.progress];
@@ -137,7 +124,46 @@ export function ReviewPage() {
     if (itemId) {
       setCurrentQuestion(buildReviewQuestion(itemId, selectedItems, learningItems, state.questionTypes, snapshot.preferences.language));
     }
-  }
+  }, [
+    attempts,
+    completedItems,
+    navigate,
+    patchSnapshot,
+    persistence.userId,
+    progressMap,
+    script,
+    selectedItems,
+    sessionState,
+    startedAt,
+    snapshot,
+  ]);
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (!feedback && ["Digit1", "Digit2", "Digit3", "Digit4"].includes(event.code) && currentQuestion) {
+        event.preventDefault();
+        const index = Number(event.code.replace("Digit", "")) - 1;
+        const option = currentQuestion.options[index];
+        if (option) handleAnswer(option);
+        return;
+      }
+
+      if (!feedback) return;
+
+      if ((event.key === "Control" || event.ctrlKey) && !feedback.correct && !revealed) {
+        event.preventDefault();
+        setRevealed(true);
+        return;
+      }
+
+      if (event.code === "Space") {
+        event.preventDefault();
+        void continueFlow();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [continueFlow, currentQuestion, feedback, handleAnswer, revealed]);
 
   if (selectedItems.length === 0) {
     return (
