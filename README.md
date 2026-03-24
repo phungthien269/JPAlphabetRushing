@@ -35,6 +35,7 @@ Kana Flow is a serious, mobile-first Japanese alphabet learning app for Hiragana
 - Settings page with theme, language, shortcut remapping, persistence status, and install prompt
 - Anonymous-first persistence model with Supabase support and local fallback
 - PWA-ready shell for iPhone home-screen usage
+- Agentation installed for development-only UI annotation workflows
 
 ## Run Locally
 
@@ -95,6 +96,16 @@ Kana Flow is a serious, mobile-first Japanese alphabet learning app for Hiragana
 `supabase/seed.sql` is generated from `src/lib/kana-data.ts`, so any content change should be followed by `npm run seed:generate`.
 
 If Supabase is not configured, the app still works with local persistence only.
+
+## Agentation
+
+Agentation is installed as a development-only tool for desktop UI annotation.
+
+- Package: `agentation`
+- Mount point: [src/app.tsx](C:\Users\hai yen\Desktop\JPD\src\app.tsx)
+- Optional MCP endpoint env: `VITE_AGENTATION_ENDPOINT`
+
+By default it only renders in development and only on desktop-width screens.
 
 ## Notes
 

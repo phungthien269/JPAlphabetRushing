@@ -1,7 +1,9 @@
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Route, Routes } from "react-router-dom";
+import { Agentation } from "agentation";
 import i18n from "./lib/i18n";
+import { env } from "./lib/env";
 import { bootstrapPersistence, loadPersistenceStatus } from "./lib/storage";
 import { useAppStore } from "./store/use-app-store";
 import { HomePage } from "./pages/home-page";
@@ -55,6 +57,8 @@ export function App() {
     return () => window.removeEventListener("beforeinstallprompt", handler);
   }, [setInstallPromptEvent]);
 
+  const showAgentation = window.matchMedia("(min-width: 768px)").matches;
+
   if (bootstrap.isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center px-6 text-center text-sm text-[var(--color-text-muted)]">
@@ -64,15 +68,18 @@ export function App() {
   }
 
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/scripts" element={<ScriptSelectionPage />} />
-      <Route path="/scripts/:script/select" element={<SelectionPage />} />
-      <Route path="/study/:script" element={<StudyPage />} />
-      <Route path="/review/:script" element={<ReviewPage />} />
-      <Route path="/progress" element={<ProgressPage />} />
-      <Route path="/settings" element={<SettingsPage />} />
-      <Route path="/auth/callback" element={<AuthCallbackPage />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/scripts" element={<ScriptSelectionPage />} />
+        <Route path="/scripts/:script/select" element={<SelectionPage />} />
+        <Route path="/study/:script" element={<StudyPage />} />
+        <Route path="/review/:script" element={<ReviewPage />} />
+        <Route path="/progress" element={<ProgressPage />} />
+        <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/auth/callback" element={<AuthCallbackPage />} />
+      </Routes>
+      {showAgentation ? <Agentation endpoint={env.agentationEndpoint || undefined} /> : null}
+    </>
   );
 }
