@@ -142,6 +142,7 @@ export function ReviewPage() {
     const onKeyDown = (event: KeyboardEvent) => {
       if (!feedback && ["Digit1", "Digit2", "Digit3", "Digit4"].includes(event.code) && currentQuestion) {
         event.preventDefault();
+        event.stopPropagation();
         const index = Number(event.code.replace("Digit", "")) - 1;
         const option = currentQuestion.options[index];
         if (option) handleAnswer(option);
@@ -152,17 +153,29 @@ export function ReviewPage() {
 
       if ((event.key === "Control" || event.ctrlKey) && !feedback.correct && !revealed) {
         event.preventDefault();
+        event.stopPropagation();
         setRevealed(true);
         return;
       }
 
       if (event.code === "Space") {
         event.preventDefault();
+        event.stopPropagation();
         void continueFlow();
       }
     };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
+    const onKeyUp = (event: KeyboardEvent) => {
+      if (feedback && event.code === "Space") {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown, { capture: true });
+    window.addEventListener("keyup", onKeyUp, { capture: true });
+    return () => {
+      window.removeEventListener("keydown", onKeyDown, { capture: true });
+      window.removeEventListener("keyup", onKeyUp, { capture: true });
+    };
   }, [continueFlow, currentQuestion, feedback, handleAnswer, revealed]);
 
   if (selectedItems.length === 0) {
