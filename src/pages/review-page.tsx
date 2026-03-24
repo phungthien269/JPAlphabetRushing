@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { AppShell } from "../components/layout";
@@ -43,6 +43,7 @@ export function ReviewPage() {
   const [attempts, setAttempts] = useState<LearningAttempt[]>([]);
   const [completedItems, setCompletedItems] = useState<Set<string>>(new Set());
   const [startedAt] = useState(() => new Date().toISOString());
+  const suppressSpaceKeyUpRef = useRef(false);
 
   const progressMap = useMemo(() => new Map(snapshot.progress.map((entry) => [entry.itemId, entry])), [snapshot.progress]);
 
@@ -139,10 +140,21 @@ export function ReviewPage() {
   ]);
 
   useEffect(() => {
+    if (!feedback) return;
+    const activeElement = document.activeElement;
+    if (activeElement instanceof HTMLElement) {
+      activeElement.blur();
+    }
+  }, [feedback]);
+
+  useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if (!feedback && ["Digit1", "Digit2", "Digit3", "Digit4"].includes(event.code) && currentQuestion) {
+      if (event.code === "Space") {
         event.preventDefault();
         event.stopPropagation();
+      }
+
+      if (!feedback && ["Digit1", "Digit2", "Digit3", "Digit4"].includes(event.code) && currentQuestion) {
         const index = Number(event.code.replace("Digit", "")) - 1;
         const option = currentQuestion.options[index];
         if (option) handleAnswer(option);
@@ -159,21 +171,29 @@ export function ReviewPage() {
       }
 
       if (event.code === "Space") {
-        event.preventDefault();
-        event.stopPropagation();
+        suppressSpaceKeyUpRef.current = true;
         void continueFlow();
       }
     };
-    const onKeyUp = (event: KeyboardEvent) => {
+    const onKeyPress = (event: KeyboardEvent) => {
       if (feedback && event.code === "Space") {
         event.preventDefault();
         event.stopPropagation();
       }
     };
+    const onKeyUp = (event: KeyboardEvent) => {
+      if (event.code === "Space" && suppressSpaceKeyUpRef.current) {
+        event.preventDefault();
+        event.stopPropagation();
+        suppressSpaceKeyUpRef.current = false;
+      }
+    };
     window.addEventListener("keydown", onKeyDown, { capture: true });
+    window.addEventListener("keypress", onKeyPress, { capture: true });
     window.addEventListener("keyup", onKeyUp, { capture: true });
     return () => {
       window.removeEventListener("keydown", onKeyDown, { capture: true });
+      window.removeEventListener("keypress", onKeyPress, { capture: true });
       window.removeEventListener("keyup", onKeyUp, { capture: true });
     };
   }, [continueFlow, currentQuestion, feedback, handleAnswer, revealed]);
@@ -253,14 +273,6 @@ export function ReviewPage() {
               <span>{t("common.mastered")}</span>
               <span>{completedItems.size}</span>
             </div>
-          </div>
-          <div className="space-y-2">
-            {Object.values(sessionState.items).map((entry) => (
-              <div key={entry.itemId} className="flex items-center justify-between rounded-2xl border border-[var(--color-border)] px-3 py-2 text-sm">
-                <span className="kana-text">{selectedItems.find((item) => item.id === entry.itemId)?.character}</span>
-                <Badge>{entry.remaining}</Badge>
-              </div>
-            ))}
           </div>
         </Card>
       </div>
