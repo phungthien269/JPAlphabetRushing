@@ -102,7 +102,7 @@ If Supabase is not configured, the app still works with local persistence only.
 Agentation is installed as a development-only tool for desktop UI annotation.
 
 - Package: `agentation`
-- Mount point: [src/app.tsx](C:\Users\hai yen\Desktop\JPD\src\app.tsx)
+- Mount point: \src\app.tsx)
 - Optional MCP endpoint env: `VITE_AGENTATION_ENDPOINT`
 
 By default it only renders in development and only on desktop-width screens.
